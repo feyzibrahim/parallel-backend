@@ -8,4 +8,4 @@ In the project directory, you can run:
 
 ### `yarn start`
 
-### `yarn dev`
+### `yarn dev` -- On development run only this

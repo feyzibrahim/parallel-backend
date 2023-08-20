@@ -8,6 +8,8 @@ const userRoutes = require("./routes/user");
 // const adminRoutes = require("./routes/admin");
 
 const gameRoutes = require("./routes/game");
+const bookingRoutes = require("./routes/booking");
+const adminRoutes = require("./routes/admin");
 
 const app = express();
 
@@ -23,6 +25,10 @@ app.use("/api/user", userRoutes);
 // app.use("/api/admin", adminRoutes);
 
 app.use("/api/games", gameRoutes);
+
+app.use("/api/booking", bookingRoutes);
+
+app.use("/api/admin", adminRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI)

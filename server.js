@@ -10,6 +10,7 @@ const userRoutes = require("./routes/user");
 const gameRoutes = require("./routes/game");
 const bookingRoutes = require("./routes/booking");
 const adminRoutes = require("./routes/admin");
+const resultRoutes = require("./routes/result");
 
 const app = express();
 
@@ -27,6 +28,8 @@ app.use("/api/user", userRoutes);
 app.use("/api/games", gameRoutes);
 
 app.use("/api/booking", bookingRoutes);
+
+app.use("/api/result", resultRoutes);
 
 app.use("/api/admin", adminRoutes);
 

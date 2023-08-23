@@ -55,10 +55,19 @@ const deleteResult = async (req, res) => {
 };
 
 const getResultsByDate = async (req, res) => {
-  const { date } = req.query;
+  const { date, gameId } = req.query;
+
+  if (!date) {
+    return res.status(400).json({ error: "Date must be passed along the api" });
+  }
+  if (!gameId) {
+    return res
+      .status(400)
+      .json({ error: "gameId must be passed along the api" });
+  }
 
   try {
-    const result = await Result.findOne({ date });
+    const result = await Result.findOne({ date, gameId });
 
     if (!result) {
       return res

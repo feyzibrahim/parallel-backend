@@ -3,7 +3,9 @@ const Booking = require("../models/bookingModel");
 const Counter = require("../models/counterModel");
 
 const getBookings = async (req, res) => {
-  const bookings = await Booking.find().populate("customerId");
+  const bookings = await Booking.find()
+    .populate("customerId")
+    .sort({ createdAt: -1 });
 
   res.status(200).json(bookings);
 };
@@ -55,6 +57,23 @@ const getOneBooking = async (req, res) => {
   }
 
   return res.status(200).json(booking);
+};
+
+const getBookingsByGameId = async (req, res) => {
+  const { gameId } = req.query;
+
+  try {
+    const bookings = await Booking.find({ gameId })
+      .populate("customerId")
+      .sort({ createdAt: -1 }) // Sort by createdAt in descending order
+      .exec();
+
+    res.status(200).json(bookings);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching bookings." });
+  }
 };
 
 const updateBooking = async (req, res) => {
@@ -114,4 +133,5 @@ module.exports = {
   updateBooking,
   deleteBooking,
   deleteAllBookings,
+  getBookingsByGameId,
 };

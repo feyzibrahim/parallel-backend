@@ -5,6 +5,7 @@ const {
   createBooking,
   createBookings,
   getOneBooking,
+  getBookingsByGameId,
   updateBooking,
   deleteBooking,
   deleteAllBookings,
@@ -16,6 +17,8 @@ const router = express.Router();
 // router.use(requireAuth);
 
 router.get("/", getBookings);
+
+router.get("/by-game-id/", getBookingsByGameId);
 
 router.post("/", createBooking);
 

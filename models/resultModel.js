@@ -7,6 +7,7 @@ const resultSchema = new Schema(
     gameId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
+      ref: "Game",
     },
     date: {
       type: Date,

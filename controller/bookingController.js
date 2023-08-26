@@ -4,7 +4,7 @@ const Counter = require("../models/counterModel");
 
 const getBookings = async (req, res) => {
   const bookings = await Booking.find()
-    .populate("customerId")
+    .populate("userId")
     .sort({ createdAt: -1 });
 
   res.status(200).json(bookings);
@@ -64,7 +64,7 @@ const getBookingsByGameId = async (req, res) => {
 
   try {
     const bookings = await Booking.find({ gameId })
-      .populate("customerId")
+      .populate("userId")
       .sort({ createdAt: -1 }) // Sort by createdAt in descending order
       .exec();
 

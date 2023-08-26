@@ -11,7 +11,7 @@ const bookingSchema = new Schema(
       required: true,
       ref: "Game",
     },
-    customerId: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: "User",

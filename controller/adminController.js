@@ -2,8 +2,12 @@ const User = require("../models/userModel");
 const { default: mongoose } = require("mongoose");
 
 const getAllUsers = async (req, res) => {
-  const users = await User.find();
-  res.status(200).json(users);
+  try {
+    const users = await User.find({ userType: "user" });
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
 
 const updateUser = async (req, res) => {

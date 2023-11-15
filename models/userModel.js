@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-const validator = require("validator");
 
 const Schema = mongoose.Schema;
 
@@ -19,13 +18,17 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    package: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Package",
+    },
   },
   { timestamps: true }
 );
 
 // Static Signup Method
 
-userSchema.statics.signup = async function (username, password) {
+userSchema.statics.signup = async function (username, password, package) {
   // Validation
   if (!username || !password) {
     throw Error("All Fields must be filled");
@@ -50,6 +53,7 @@ userSchema.statics.signup = async function (username, password) {
     username,
     password: hash,
     userType: type,
+    package,
   });
 
   return user;

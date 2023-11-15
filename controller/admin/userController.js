@@ -1,5 +1,13 @@
-const User = require("../models/userModel");
+const User = require("../../models/userModel");
 const { default: mongoose } = require("mongoose");
+const jwt = require("jsonwebtoken");
+
+// Create JST Tokens
+const createToken = (_id) => {
+  return jwt.sign({ _id }, process.env.SECRET, {
+    expiresIn: "1d",
+  });
+};
 
 const getAllUsers = async (req, res) => {
   try {
@@ -32,7 +40,24 @@ const updateUser = async (req, res) => {
   }
 };
 
+const createUser = async (req, res) => {
+  try {
+    const { username, password, package } = req.body;
+
+    const user = await User.signup(username, password, package);
+
+    const token = createToken(user._id);
+
+    const userType = user.userType;
+
+    return res.status(200).json({ username, token, userType, package });
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getAllUsers,
   updateUser,
+  createUser,
 };

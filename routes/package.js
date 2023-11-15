@@ -3,9 +3,6 @@ const express = require("express");
 const {
   getPackages,
   getOnePackage,
-  createPackage,
-  updatePackage,
-  deletePackage,
 } = require("../controller/packageController");
 
 const router = express.Router();
@@ -15,12 +12,6 @@ const router = express.Router();
 
 router.get("/", getPackages);
 
-router.post("/", createPackage);
-
 router.get("/:id", getOnePackage);
-
-router.patch("/:id", updatePackage);
-
-router.delete("/:id", deletePackage);
 
 module.exports = router;

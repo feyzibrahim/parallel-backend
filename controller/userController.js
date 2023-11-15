@@ -15,17 +15,16 @@ const loginUser = async (req, res) => {
   try {
     const user = await User.login(username, password);
 
-    const token = createToken(user._id);
+    const id = user._id;
+    const token = createToken(id);
 
     const userName = user.userName;
     const userType = user.userType;
 
-    res.status(200).json({ username, token, userName, userType });
+    res.status(200).json({ id, username, token, userName, userType });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
-
-  //   res.status(200).json({ msg: "Login User" }); <-- just testing for first time
 };
 
 // Signup function
@@ -43,8 +42,6 @@ const signupUser = async (req, res) => {
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
-
-  //   res.status(200).json({ msg: "Signup User" }); <-- just testing for first time
 };
 
 module.exports = {

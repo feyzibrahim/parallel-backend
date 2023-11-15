@@ -4,7 +4,7 @@ const Counter = require("../models/counterModel");
 
 const getBookings = async (req, res) => {
   const bookings = await Booking.find()
-    .populate("userId")
+    .populate("userId", { username: 1 })
     .sort({ createdAt: -1 });
 
   res.status(200).json(bookings);
@@ -60,13 +60,45 @@ const getOneBooking = async (req, res) => {
 };
 
 const getBookingsByGameId = async (req, res) => {
-  const { gameId } = req.query;
+  const { userId, gameId, startDate, endDate, filterNumber } = req.query;
+
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+
+  const endOfDay = new Date();
+  endOfDay.setHours(23, 59, 59, 999);
+
+  let filter = { gameId, userId };
+
+  // If either startDate or endDate is provided, use it in the filter
+  if (startDate || endDate) {
+    filter.createdAt = {};
+
+    if (startDate) {
+      filter.createdAt.$gte = new Date(startDate);
+    } else {
+      filter.createdAt.$gte = startOfDay;
+    }
+
+    if (endDate) {
+      // Set the end time to the last moment of the end day
+      const endDay = new Date(endDate);
+      endDay.setHours(23, 59, 59, 999);
+      filter.createdAt.$lt = endDay;
+    } else {
+      filter.createdAt.$lt = endOfDay;
+    }
+  } else {
+    // If neither startDate nor endDate is provided, use the default start and end of the day
+    filter.createdAt = { $gte: startOfDay, $lt: endOfDay };
+  }
+
+  if (filterNumber) {
+    filter.number = parseInt(filterNumber, 10);
+  }
 
   try {
-    const bookings = await Booking.find({ gameId })
-      .populate("userId")
-      .sort({ createdAt: -1 }) // Sort by createdAt in descending order
-      .exec();
+    const bookings = await Booking.find(filter).sort({ createdAt: -1 });
 
     res.status(200).json(bookings);
   } catch (error) {
@@ -100,18 +132,42 @@ const updateBooking = async (req, res) => {
 
 const deleteBooking = async (req, res) => {
   const { id } = req.params;
+
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res
       .status(404)
-      .json({ error: "Id is not valid please check again" });
+      .json({ error: "Id is not valid, please check again" });
   }
 
-  const booking = await Booking.findByIdAndDelete({ _id: id });
-  if (!booking) {
-    return res.status(400).json({ error: "No such Booking" });
-  }
+  try {
+    const booking = await Booking.findById(id);
 
-  return res.status(200).json(booking);
+    if (!booking) {
+      return res.status(400).json({ error: "No such Booking" });
+    }
+
+    // Calculate the time difference in minutes
+    const currentTime = new Date();
+    const creationTime = booking.createdAt;
+    const timeDifferenceInMinutes = Math.floor(
+      (currentTime - creationTime) / (1000 * 60)
+    );
+
+    // Allow deletion only if the time difference is within 30 minutes
+    if (timeDifferenceInMinutes > 30) {
+      return res
+        .status(403)
+        .json({ error: "Cannot delete after 30 minutes of creation" });
+    }
+
+    // Delete the booking
+    const deletedBooking = await Booking.findByIdAndDelete(id);
+    return res.status(200).json(deletedBooking);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: "An error occurred while deleting the booking" });
+  }
 };
 
 const deleteAllBookings = async (req, res) => {

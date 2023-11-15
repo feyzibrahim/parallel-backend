@@ -5,7 +5,6 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 const userRoutes = require("./routes/user");
-// const adminRoutes = require("./routes/admin");
 
 const gameRoutes = require("./routes/game");
 const bookingRoutes = require("./routes/booking");
@@ -25,7 +24,6 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/user", userRoutes);
-// app.use("/api/admin", adminRoutes);
 
 app.use("/api/games", gameRoutes);
 

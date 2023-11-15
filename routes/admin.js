@@ -26,6 +26,14 @@ const {
   deleteResult,
   getResultsByDate,
 } = require("../controller/admin/resultController");
+const {
+  createPackage,
+  deletePackage,
+  getOnePackage,
+  getPackages,
+  updatePackage,
+  deleteAllPackage,
+} = require("../controller/admin/packageController");
 
 const router = express.Router();
 
@@ -55,5 +63,13 @@ router.post("/result/", createResult);
 router.get("/result/byDate/", getResultsByDate);
 router.patch("/result/:id", updateResult);
 router.delete("/result/:id", deleteResult);
+
+// Result
+router.get("/packages/", getPackages);
+router.get("/package/:id", getOnePackage);
+router.post("/package/", createPackage);
+router.patch("/package/:id", updatePackage);
+router.delete("/package/:id", deletePackage);
+router.delete("/package-all/", deleteAllPackage);
 
 module.exports = router;

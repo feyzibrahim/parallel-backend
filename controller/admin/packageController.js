@@ -3,10 +3,12 @@ const mongoose = require("mongoose");
 
 // Get all the packages
 const getPackages = async (req, res) => {
-  // const { userId } = req.query;
-
-  const packages = await Package.find({});
-  res.status(200).json(packages);
+  try {
+    const packages = await Package.find({}, { name: 1 });
+    return res.status(200).json(packages);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
 };
 
 const getOnePackage = async (req, res) => {
@@ -73,10 +75,21 @@ const deletePackage = async (req, res) => {
   return res.status(200).json(package);
 };
 
+const deleteAllPackage = async (req, res) => {
+  try {
+    const package = await Package.deleteMany();
+
+    return res.status(200).json({ package, status: "success" });
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getPackages,
   getOnePackage,
   createPackage,
   updatePackage,
   deletePackage,
+  deleteAllPackage,
 };

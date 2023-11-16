@@ -37,7 +37,12 @@ const createBookings = async (req, res) => {
       bookingsData[i].billNumber = startingBillNumber + i;
     }
 
-    const bookings = await Booking.insertMany(bookingsData);
+    const populatedBookings = await Booking.insertMany(bookingsData);
+    const bookings = await Booking.populate(populatedBookings, {
+      path: "userId",
+      select: "username",
+    });
+
     return res.status(200).json(bookings);
   } catch (error) {
     return res.status(400).json({ error: error.message });

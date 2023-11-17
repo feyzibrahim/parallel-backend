@@ -11,7 +11,10 @@ const createToken = (_id) => {
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({ userType: "user" });
+    const users = await User.find(
+      { userType: "user" },
+      { password: 0, updatedAt: 0 }
+    );
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
